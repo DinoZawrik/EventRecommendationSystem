@@ -1,4 +1,4 @@
-[🇬🇧 English](README.md) | [🇷🇺 Русский](README.ru.md)
+[🇬🇧 English](README.en.md) | [🇷🇺 Русский](README.ru.md)
 
 # Проект: Рекомендательная система событий
 
