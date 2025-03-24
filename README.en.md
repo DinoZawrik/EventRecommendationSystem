@@ -19,7 +19,7 @@ To develop and evaluate a recommendation system capable of effectively ranking e
 * **Complete Data Science Pipeline:** Implementation of all stages from data loading and Exploratory Data Analysis (EDA) to Feature Engineering, machine learning model training, and submission file creation.
 * **Effective Feature Engineering:** Creation of informative features based on time, event popularity, and user demographics, enhancing prediction quality.
 * **Machine Learning Model Training and Comparison:**  Utilization of Logistic Regression, Random Forest, and LightGBM models, identifying LightGBM as the most effective for this task.
-* **MAP@200 Metric Implementation:** Integration of the Mean Average Precision at 200 (MAP@200) metric to evaluate the ranking quality of recommendations, achieving a MAP@200 score of **0.2285** on the validation set.
+* **MAP@200 Metric Implementation:** Integration of the Mean Average Precision at 200 (MAP@200) metric to evaluate the ranking quality of recommendations, achieving a MAP@200 score of **0.3285** on the validation set.
 * **`recommend_events()` Recommendation Function:** Development of a function to generate personalized event recommendations for a specific user, leveraging the trained LightGBM model.
 
 ## Technologies Used
@@ -89,7 +89,7 @@ print(f"Recommendations for User ID {user_id_example}: {recommendations}")
 
 ## MAP@200 Evaluation Metric
 
-The **Mean Average Precision at 200 (MAP@200)** metric was used to evaluate the ranking quality of recommendations. The MAP@200 score achieved on the validation set using the LightGBM model is **0.2285**.
+The **Mean Average Precision at 200 (MAP@200)** metric was used to evaluate the ranking quality of recommendations. The MAP@200 score achieved on the validation set using the LightGBM model is **0.3285**.
 
 MAP@200 is a suitable metric for evaluating recommendation systems as it considers the order of recommendations and focuses on accuracy in the top-k positions of the recommendation list, which is particularly important for tasks where users typically view only the first few suggested options.
 
