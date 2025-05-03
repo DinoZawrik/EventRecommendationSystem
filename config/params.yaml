@@ -1,0 +1,95 @@
+# config/params.yaml
+
+# --- Data Paths ---
+data:
+  raw_dir: data/
+  train_csv: train.csv
+  test_csv: test.csv
+  events_csv: events.csv # Assuming unzipped for simplicity, adjust if needed
+  users_csv: users.csv
+  event_attendees_csv: event_attendees.csv # Assuming unzipped
+  processed_dir: data/processed/ # Optional: For saving intermediate steps
+  log_file: project.log
+
+# --- Feature Engineering ---
+features:
+  datetime_cols:
+    train: timestamp
+    test: timestamp
+    events: start_time
+    users: joinedAt
+  birthyear_col: birthyear
+  current_year: 2013 # Year for age calculation
+  age_outlier_threshold: 100
+  event_popularity_epsilon: 1.0e-6
+  selected_features:
+    # Keep user/event for joining/submission, remove before training
+    # - user
+    # - event
+    - age
+    - gender_male
+    - has_location_1
+    - is_weekend_event_1
+    - has_geo_info_1
+    - c_1
+    - c_2
+    - c_3
+    - invited_1
+    - event_start_hour
+    - user_joined_month
+    - user_joined_year
+    - hrs_to_event
+    - minsToEvent_frmJoin
+    - yes_count
+    - maybe_count
+    - invited_count
+    - no_count
+    - yes_ratio
+    - yes_vs_no_ratio
+    - attendance_rate
+  target_col: interested
+  user_id_col: user
+  event_id_col: event
+
+# --- Preprocessing ---
+preprocessing:
+  test_split_ratio: 0.2
+  random_state: 42
+  use_smote: true
+  smote_params:
+    random_state: 42
+
+# --- Model Training ---
+train:
+  # Currently focusing on LightGBM as the best model from the notebook
+  model_type: lightgbm
+  # Add other models here if needed (e.g., logistic, random_forest)
+  lgbm_params:
+    random_state: 42
+    class_weight: balanced # Or remove if using SMOTE consistently
+    # Add other LGBM hyperparameters if tuned
+    # objective: binary
+    # metric: auc
+    # n_estimators: 100
+    # learning_rate: 0.1
+    # ...
+
+# --- Evaluation ---
+evaluate:
+  map_k: 200
+  metrics_file: reports/evaluation_metrics.json
+
+# --- Prediction & Recommendation ---
+predict:
+  submission_file: submission.csv
+recommend:
+  top_n: 5
+  # How to get data for recommendation: 'load_processed_test' or 'process_user_live'
+  recommendation_data_source: load_processed_test # Simplest for now
+
+# --- Output Paths ---
+output:
+  model_dir: models/
+  model_name: lgbm_model.joblib
+  reports_dir: reports/
+  figures_dir: reports/figures/ # For saving plots if generated via script
