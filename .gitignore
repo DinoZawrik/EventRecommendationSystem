@@ -132,3 +132,6 @@ dmypy.json
 
 # macOS specific
 .DS_Store
+/submission.csv
+/event
+/src/__pycache__
