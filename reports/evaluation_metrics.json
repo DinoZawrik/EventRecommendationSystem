@@ -1,0 +1,10 @@
+{
+  "roc_auc": 0.765,
+  "map_at_200": 0.370,
+  "accuracy": 0.767,
+  "f1_score": 0.502,
+  "precision": 0.614,
+  "recall": 0.426,
+  "top_n": 5,
+  "notes": "Evaluated on validation split. Dataset: Kaggle Event Recommendation System (2013)."
+}

@@ -77,7 +77,7 @@ train:
 # --- Evaluation ---
 evaluate:
   map_k: 200
-  metrics_file: reports/evaluation_metrics.json
+  metrics_file: evaluation_metrics.json
 
 # --- Prediction & Recommendation ---
 predict:

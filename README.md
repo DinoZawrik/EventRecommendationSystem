@@ -1,132 +1,167 @@
-# Система Рекомендации Событий ✨
+# Event Recommendation System
 
-Интерактивная система для рекомендации событий пользователям на основе их интересов и характеристик событий. Демонстрация модели развернута с использованием Gradio и доступна на Hugging Face Spaces.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
+[![LightGBM](https://img.shields.io/badge/LightGBM-4.6-brightgreen)](https://lightgbm.readthedocs.io/)
+[![Gradio](https://img.shields.io/badge/Gradio-5.29-orange?logo=gradio)](https://www.gradio.app/)
+[![HF Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/DinoZawrik/Event)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![README на русском](https://img.shields.io/badge/README-на%20русском-blue)](README.ru.md)
 
-## Описание
+> An end-to-end event recommendation pipeline built for the [Kaggle Event Recommendation Engine Challenge](https://www.kaggle.com/c/event-recommendation-engine-challenge). A **LightGBM** classifier predicts user interest and ranks personalised event suggestions via an interactive **Gradio** interface.
 
-Этот проект реализует полный цикл Data Science для создания рекомендательной системы событий. Он включает загрузку и анализ данных, продвинутый feature engineering, обучение модели машинного обучения (LightGBM) для предсказания заинтересованности пользователя и развертывание интерактивного веб-интерфейса для демонстрации рекомендаций.
+**Live demo →** https://huggingface.co/spaces/DinoZawrik/Event
 
-## Ключевые Возможности
+## Screenshots
 
-*   ⚙️ **Обработка данных:** Загрузка, очистка и предобработка данных о пользователях, событиях и взаимодействиях.
-*   🛠️ **Feature Engineering:** Создание более 20 признаков, включая временные, признаки популярности, гео-признаки и обработку пропусков/аномалий.
-*   💡 **Моделирование:** Обучение и оценка модели LightGBM с использованием SMOTE для борьбы с дисбалансом классов.
-*   📊 **Оценка:** Расчет метрик AUC-ROC и MAP@k для оценки качества модели и ранжирования.
-*   🚀 **Интерактивное Демо:** Веб-приложение на Gradio, размещенное на Hugging Face Spaces, для получения персональных рекомендаций.
-*   📄 **Генерация Submission:** Возможность создать файл `submission.csv` для соревнований (через `main.py`).
+| Recommendations | Model Performance |
+|:---:|:---:|
+| ![Recommendations](screenshot/recommendations.png) | ![Model Performance](screenshot/model_performance.png) |
 
-## 🚀 Демонстрация на Hugging Face Spaces
+---
 
-**Попробуйте работающее приложение здесь:**
+## Key Features
 
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/DinoZawrik/Event)  
+| Feature | Details |
+|---|---|
+| Data pipeline | Pandas-based loading of users, events, attendees, train/test CSVs |
+| Feature engineering | 21 features: temporal, geo, popularity counts, attendance ratios |
+| Class imbalance | SMOTE oversampling (imbalanced-learn) |
+| Model | LightGBM binary classifier |
+| Evaluation | ROC AUC, MAP@200, Accuracy, F1 on validation split |
+| Serving | Gradio 5 with tabbed UI, DataFrame output, live metrics dashboard |
+| Containerisation | Docker + `docker-compose` ready |
 
-**Предпросмотр Интерфейса:**
+---
 
-![Превью Gradio Интерфейса](preview.png)
+## Model Performance
 
-## Структура Проекта
+| Metric | Value |
+|---|---|
+| ROC AUC | **0.765** |
+| MAP@200 | **0.370** |
+| Accuracy | **76.7 %** |
+| F1 Score | **0.502** |
+| Precision | 0.614 |
+| Recall | 0.426 |
+
+---
+
+## Project Structure
 
 ```
-EventRecommend/  # Имя папки репозитория на HF Spaces
-│
+EventRecommendationSystem/
+├── app.py                  # Gradio web application
+├── main.py                 # CLI pipeline (train / predict / recommend)
 ├── config/
-│   └── params.yaml          # Конфигурация проекта
-├── data/
-│   ├── event_attendees.csv
-│   ├── events_optimized.parquet # Оптимизированные данные событий <--- ВАЖНО
-│   ├── preview.png          # Скриншот для README
-│   ├── test.csv
-│   └── users.csv
-├── models/
-│   └── lgbm_model.joblib    # Обученная модель
-├── notebooks/
-│   └── event_recommendation_system.ipynb # EDA и эксперименты
-├── reports/                 # (Локально) Сюда сохраняются метрики и логи
-├── src/                     # Исходный код модулей
+│   └── params.yaml         # All hyperparameters & paths
+├── data/                   # Raw CSVs (not committed — see below)
+├── models/                 # Saved LightGBM model
+├── reports/
+│   └── evaluation_metrics.json
+├── src/
 │   ├── data_loader.py
-│   ├── evaluate.py
 │   ├── feature_engineering.py
 │   ├── model_training.py
+│   ├── evaluate.py
 │   ├── predict.py
 │   ├── recommend.py
 │   └── utils.py
-│
-├── .gitattributes           # Конфигурация Git LFS
-├── .gitignore               # Игнорируемые файлы для Git
-├── app.py                   # Код Gradio приложения <--- ИСПОЛЬЗУЕТСЯ ДЛЯ ДЕПЛОЯ
-├── main.py                  # Скрипт для локального обучения/предсказания
-├── README.md                # Этот файл
-└── requirements.txt         # Зависимости Python
+├── notebooks/
+│   └── event_recommendation_system.ipynb
+├── requirements.txt
+└── Dockerfile
 ```
-*(Примечание: Некоторые файлы данных (`train.csv`, `user_friends.csv`, бенчмарки) были удалены из репозитория для соответствия лимитам хранилища HF Spaces)*
 
-## Установка (Локально)
+---
 
-1.  **Клонируйте репозиторий:**
-    ```bash
-    # Сначала установите Git LFS: https://git-lfs.github.com/
-    git lfs install
-    git clone https://huggingface.co/spaces/DinoZawrik/Event
-    cd Event
-    ```
-    *(Замените URL на URL вашего Space)*
-2.  **Создайте и активируйте виртуальное окружение:**
-    ```bash
-    python -m venv event-env
-    # Windows: event-env\Scripts\activate
-    # macOS/Linux: source event-env/bin/activate
-    ```
-3.  **Установите зависимости:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Скачайте LFS файлы:** Git LFS должен автоматически скачать большие файлы при клонировании. Если нет, выполните:
-    ```bash
-    git lfs pull
-    ```
+## Quickstart
 
-## Использование (Локально)
-
-### 1. Обучение модели
-
-(Требует наличия `train.csv` и других файлов, которые могли быть удалены для деплоя. Используйте ваш исходный локальный репозиторий до очистки для этого шага).
+### 1. Clone & install
 
 ```bash
+git clone https://github.com/<your-username>/EventRecommendationSystem.git
+cd EventRecommendationSystem
+pip install -r requirements.txt
+```
+
+### 2. Download data
+
+Download the dataset from [Kaggle](https://www.kaggle.com/c/event-recommendation-engine-challenge/data)
+and place the CSV files in `data/`:
+
+```
+data/
+├── train.csv
+├── test.csv
+├── events.csv
+├── users.csv
+└── event_attendees.csv
+```
+
+### 3. Train the model
+
+```bash
+python main.py --mode train --config config/params.yaml
+```
+
+### 4. Launch the Gradio app
+
+```bash
+python app.py
+```
+
+Open http://localhost:7860 in your browser.
+
+---
+
+## Docker
+
+```bash
+docker build -t event-rec .
+docker run -p 7860:7860 \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/models:/app/models \
+  event-rec
+```
+
+Or with Compose:
+
+```bash
+docker-compose up --build
+```
+
+---
+
+## CLI Modes
+
+```bash
+# Train model & evaluate
 python main.py --mode train
-```
-*   Сохраняет модель в `models/` и метрики в `reports/`.
 
-### 2. Генерация файла предсказаний
-
-```bash
+# Generate submission.csv for Kaggle
 python main.py --mode predict
+
+# Recommend top-N events for a specific user
+python main.py --mode recommend --user_id 12345
 ```
-*   Создает `submission.csv` в корне проекта.
 
-### 3. Запуск локального Gradio демо
+---
 
-```bash
-python app.py```
-*   Запускает веб-сервер, доступный обычно по адресу `http://127.0.0.1:7860`.
+## Configuration
 
-## Методология
+All parameters live in [`config/params.yaml`](config/params.yaml).
 
-Система использует модель градиентного бустинга **LightGBM** для предсказания вероятности того, что пользователь заинтересуется событием. Основные шаги включают:
+Key settings:
 
-*   **Feature Engineering:** Создание признаков на основе времени, популярности событий (из `event_attendees.csv`), демографии пользователей и категорий событий (`c_1`...).
-*   **Обработка данных:** Заполнение пропусков (например, медианой для возраста), One-Hot Encoding категорий.
-*   **Борьба с дисбалансом:** Применение SMOTE на обучающей выборке (при запуске `main.py --mode train`).
-*   **Оценка:** Использование AUC-ROC для бинарной классификации и MAP@k (Mean Average Precision at k, k=200) для оценки качества ранжирования рекомендаций.
+| Key | Default | Description |
+|---|---|---|
+| `features.current_year` | `2013` | Reference year for age calculation (dataset is from 2013) |
+| `features.age_outlier_threshold` | `100` | Age values above this are set to NaN |
+| `recommend.top_n` | `5` | Number of recommendations to return |
+| `output.model_dir` | `models/` | Directory for saved model artefacts |
 
+---
 
-## Технологии
+## License
 
-*   Python
-*   Pandas, NumPy
-*   Scikit-learn
-*   LightGBM
-*   imbalanced-learn (SMOTE)
-*   Gradio (Веб-интерфейс)
-*   Hugging Face Spaces (Хостинг)
-*   Git & Git LFS
+MIT — see [LICENSE](LICENSE).
